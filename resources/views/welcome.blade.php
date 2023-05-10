@@ -10,9 +10,9 @@
             </div>
         @endif
     </div>
-    <div class="container-fluid my-5">
-        <h2>Gli Ultimi Articoli Pubblicati:</h2>
-        <div class="row justify-content-around">
+    <div class="container-fluid my-5 text-center">
+        <h2>Gli Ultimi Articoli Pubblicati</h2>
+        <div class="row justify-content-around my-5">
             @foreach ($articles as $article)
              <div class="col-12 col-md-3">
                 <div class="card" style="width: 18rem;">
@@ -20,13 +20,14 @@
                     <div class="card-body">
                       <h5 class="card-title">{{$article->title}}</h5>
                       <p class="card-text">{{$article->subtitle}}</p>
-                      <p class="small text-muted fst-italic text-capitalize">{{$article->category->name}}</p>
-                      <a href="#" class="btn btn-primary">Go somewhere</a>
+                      <a class="small text-muted fst-italic text-capitalize" href="{{route('article.byCategory', ['category' => $article->category->id])}}">{{$article->category->name}}</a>
+                      
                     </div>
                     <div class="card-footer text-muted d-flex justify-content-between align-items-center">
                         Redatto il: {{$article->created_at->format('d/m/Y')}} 
-                        <br> da: {{$article->user->name}}
-                        <a href="#" class="btn btn-info text-white">Leggi</a>
+                         
+                        <a class="small text-muted fst-italic text-capitalize" href="{{route('article.byUser', ['user' => $article->user->id])}}">{{$article->user->name}}</a>
+                        <a href="{{route('article.show', compact('article'))}}" class="btn btn-info text-white">Leggi</a>
                     </div>
                   </div>
             </div>   

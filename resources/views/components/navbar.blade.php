@@ -81,6 +81,12 @@
                 <li><hr class="dropdown-divider"></li>
                 <li><a class="dropdown-item" href="{{route('article.create')}}">Inserisci un'articolo</a></li>
                 <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="{{route('careers')}}">Lavora con noi</a></li>
+                <li><hr class="dropdown-divider"></li>
+                @if (Auth::user()->is_admin)
+                  <li><a class="dropdown-item" href="{{route('admin.dashboard')}}">Dashboard Admin</a></li>
+                  <li><hr class="dropdown-divider"></li>   
+                @endif
                 <li><a class="dropdown-item" href="#" onclick="event.preventDefault(); document.querySelector('#form-logout').submit();">Esci</a></li>
                 <form method="POST" action="{{route('logout')}}" id="form-logout" class="d-none">@csrf</form>
               </ul> 
