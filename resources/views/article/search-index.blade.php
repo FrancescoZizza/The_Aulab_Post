@@ -2,10 +2,9 @@
     <div class="container-fluid">
         <div class="row justify-content-center text-center">
             <div class="display-1">
-                Articoli di : {{$user->name}}
+                Tutti gli Articoli per: {{$query}}
             </div>
         </div>
-    </div>
         <div class="container-fluid my-5">
             <div class="row justify-content-around">
                 @foreach ($articles as $article)
@@ -31,8 +30,7 @@
                       </div>
                 </div>   
                 @endforeach
-                
             </div>
         </div>
-    
+    </div>
 </x-layout>

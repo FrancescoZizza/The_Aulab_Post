@@ -22,6 +22,11 @@
                             Redatto il: {{$article->created_at->format('d/m/Y')}} 
                             <br> da: {{$article->user->name}}
                             <a href="{{route('article.show', compact('article'))}}" class="btn btn-info text-white">Leggi</a>
+                            <p class="small fst-italic text-capitalize">
+                                @foreach ($article->tags as $tag)
+                                    #{{$tag->name}}
+                                @endforeach
+                            </p>
                         </div>
                       </div>
                 </div>   

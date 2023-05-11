@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Tag;
+use App\Models\User;
 use App\Models\Article;
 use App\Models\Category;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -20,8 +21,8 @@ class ArticleController extends Controller
      */
     public function index()
     {
-        $articles = Article::orderBy ('created_at', 'desc')->get();
-        return view ('article.index', compact('articles'));
+        $articles = Article::where('is_accepted', true)->orderBy('created_at', 'desc')->get();
+        return view ('welcome', compact('articles'));
     }
 
     /**
@@ -43,13 +44,15 @@ class ArticleController extends Controller
             'subtitle' => 'required|unique:articles|min:5',
             'body' => 'required|min:10',
             'image' => 'image|required',
-            'category' => 'required'
+            'category' => 'required',
+            'tags' => 'required',
+
 
         ]);
 
         
 
-        Article::create([
+        $article = Article::create([
             'title' => $request->title,
             'subtitle' => $request->subtitle,
             'body' => $request->body,
@@ -59,6 +62,15 @@ class ArticleController extends Controller
 
 
         ]);
+
+        $tags = explode(',', $request->tags);
+
+        foreach ($tags as $tag){
+            $newTag = Tag::updateOrCreate([
+                'name' => $tag,
+            ]);
+            $article->tags()->attach($newTag);
+        }
 
         return redirect(route('homepage'))->with ('message', 'Articolo inserito correttamente');
     }
@@ -97,15 +109,36 @@ class ArticleController extends Controller
 
     public function byCategory(Category $category)
     {
-        $articles = $category->articles->sortByDesc ('created_at');
+        $articles = $category->articles->sortByDesc('created_at')->filter(function($article){
+            return $article->is_accepted == true;
+        });
         return view ('article.byCategory', compact('category','articles'));
     }
 
 
     public function byUser(User $user)
     {
-        $articles = $user->articles->sortByDesc('created_at');
+        $articles = $user->articles->sortByDesc('created_at')->filter(function($article){
+            return $article->is_accepted == true;
+        });
         return view ('article.byUser', compact('user','articles'));
         
+    }
+
+    public function articleSearch(Request $request){
+        $query = $request->input('query');
+        $articles = Article::search($query)->where('is_accepted', true)->orderBy('created_at', 'desc')->get();
+
+        return view ('article.search-index', compact('articles', 'query'));
+    }
+
+    public function deleteTag(Tag $tag){
+        foreach ($tag->articles as $article) {
+            $article->tags()->detach($tag);
+        }
+
+        $tag->delete();
+
+        return redirect(route('admin.dashboard'))->with('message', 'Hai correttamente eliminato il tag');
     }
 }

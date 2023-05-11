@@ -21,7 +21,18 @@
                        <p>{{$article->body}}</p>
                        <div class="text-center">
                             <a href="{{route('article.index')}}" class="btn btn-info text-qhite my-5">Torna Indietro</a>
+                            @if (Auth::user() && Auth::user()->is_revisor && $article->is_accepted != 1)
+                           <a href="{{route('revisor.acceptArticle', compact('article'))}}" class="btn btn-success text-white my-5">Accetta articolo</a>
+                           <a href="{{route('revisor.rejectArticle', compact('article'))}}" class="btn btn-danger text-white my-5">Rifiuta articolo</a>
+                           <p class="small fst-italic text-capitalize">
+                            @foreach ($article->tags as $tag)
+                                #{{$tag->name}}
+                            @endforeach
+                        </p>
+                       @endif
                        </div>
+                       
+                       
                     </div>
                 
                 

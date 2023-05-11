@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -38,5 +39,23 @@ class AdminController extends Controller
         ]);
 
         return redirect(route('admin.dashboard'))->with('message', 'Hai correttamente reso redattore l\'utente scelto');
+    }
+
+    public function editCategory(Request $request, Category $category){
+        $request->validate([
+            'name' => 'required | unique:categories',
+        ]);
+
+        $category->update([
+            'name' => strtolower($request->name),
+        ]);
+
+        return redirect(route('admin.dashboard'))->with('message', 'Hai correttamente aggiornato la categoria');
+    }
+
+    public function deleteCategory(Category $category){
+        $category->delete();
+
+        return redirect(route('admin.dashboard'))->with('message', 'Hai correttamente eliminato la categoria');
     }
 }

@@ -48,6 +48,10 @@
           <li class="nav-item list-unstyled fs-3">
             <a class="nav-link active " aria-current="page" href="{{route('homepage')}}">Home</a>
           </li>
+          <form class="d-flex mx-5" method="GET" action="{{route('article.search')}}">
+            <input type="search" name="query" placeholder="Cosa stai cercando?" aria-label="Search" class="form-control me-2">
+            <button class="btn btn-outline-info" type="submit">Cerca</button>
+          </form>
       <div class="collapse navbar-collapse " id="navbarSupportedContent">
         <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
           
@@ -85,6 +89,14 @@
                 <li><hr class="dropdown-divider"></li>
                 @if (Auth::user()->is_admin)
                   <li><a class="dropdown-item" href="{{route('admin.dashboard')}}">Dashboard Admin</a></li>
+                  <li><hr class="dropdown-divider"></li>   
+                @endif
+                @if (Auth::user()->is_writer)
+                <li><a class="dropdown-item" href="{{route('writer.dashboard')}}">Dashboard del redattore</a></li>
+                <li><hr class="dropdown-divider"></li>   
+              @endif
+                @if (Auth::user()->is_revisor)
+                  <li><a class="dropdown-item" href="{{route('revisor.dashboard')}}">Dashboard del revisore</a></li>
                   <li><hr class="dropdown-divider"></li>   
                 @endif
                 <li><a class="dropdown-item" href="#" onclick="event.preventDefault(); document.querySelector('#form-logout').submit();">Esci</a></li>

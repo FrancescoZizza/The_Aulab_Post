@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
-class UserIsRevisor
+class UserIsWriter
 {
     /**
      * Handle an incoming request.
@@ -16,9 +16,10 @@ class UserIsRevisor
      */
     public function handle(Request $request, Closure $next)//: Response
     {
-        if (Auth::user() && Auth::user()->is_revisor) {
+        if (Auth::user() && Auth::user()->is_writer){
             return $next($request);
         }
-        return redirect(route('homepage'))->with('message', 'non sei autorizzato');
+
+        return redirect(route('homepage'))->with('message', 'Non sei autorizzato');
     }
 }

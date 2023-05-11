@@ -20,7 +20,14 @@
                     <div class="card-body">
                       <h5 class="card-title">{{$article->title}}</h5>
                       <p class="card-text">{{$article->subtitle}}</p>
-                      <a class="small text-muted fst-italic text-capitalize" href="{{route('article.byCategory', ['category' => $article->category->id])}}">{{$article->category->name}}</a>
+                      @if ($article->category->id == NULL)
+                            <!-- Non mostrare nulla -->
+                      @else
+                            <a class="small text-muted fst-italic text-capitalize" href="{{route('article.byCategory', ['category' => $article->category->id])}}">{{$article->category->name}}</a>
+                      @endif
+
+
+                      
                       
                     </div>
                     <div class="card-footer text-muted d-flex justify-content-between align-items-center">
@@ -28,6 +35,11 @@
                          
                         <a class="small text-muted fst-italic text-capitalize" href="{{route('article.byUser', ['user' => $article->user->id])}}">{{$article->user->name}}</a>
                         <a href="{{route('article.show', compact('article'))}}" class="btn btn-info text-white">Leggi</a>
+                        <p class="small fst-italic text-capitalize">
+                            @foreach ($article->tags as $tag)
+                                #{{$tag->name}}
+                            @endforeach
+                        </p>
                     </div>
                   </div>
             </div>   
