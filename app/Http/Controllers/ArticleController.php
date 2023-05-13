@@ -6,8 +6,10 @@ use App\Models\Tag;
 use App\Models\User;
 use App\Models\Article;
 use App\Models\Category;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class ArticleController extends Controller
 {
@@ -59,6 +61,8 @@ class ArticleController extends Controller
             'image' => $request->file('image')->store('public/images'),
             'category_id' => $request->category,
             'user_id' => Auth::user()->id,
+            'slug' => Str::slug($request->title),
+
 
 
         ]);
@@ -88,7 +92,7 @@ class ArticleController extends Controller
      */
     public function edit(Article $article)
     {
-        //
+        return view('article.edit', compact('article'));
     }
 
     /**
@@ -96,7 +100,43 @@ class ArticleController extends Controller
      */
     public function update(Request $request, Article $article)
     {
-        //
+        $request->validate([
+            'title' => 'required|min:5|unique:articles,title,' . $article->id,
+            'subtitle' => 'required|min:5|unique:articles,subtitle,' . $article->id,
+            'body' => 'required|min:10',
+            'image' => 'image',   //forse si togli
+            'category' => 'required',
+            'tags' => 'required',
+        ]);
+
+        $article->update([
+            'title' => $request->title,
+            'subtitle' => $request->subtitle,
+            'body' => $request->body,
+            'category_id' => $request->category,
+            'slug' => Str::slug($request->title),
+        ]);
+
+        if ($request->img) {
+            Storage::delete($article->img);
+            $article->update([
+                'img' => $request->file('img')->store('public/images'),
+            ]);
+        }
+
+        $tags = explode(', ', $request->tags);
+        $newTags = [];
+        foreach ($tags as $tag) {
+            $newTag = Tag::updateOrCreate([
+                'name' => $tag
+            ]);
+            $newTags[] = $newTag->id;
+        }
+
+        $article->tags()->sync($newTags);
+
+        return redirect(route('writer.dashboard'))->with('message', 'Hai correttamente aggiornato l\' articolo scelto',);
+
     }
 
     /**
@@ -104,7 +144,13 @@ class ArticleController extends Controller
      */
     public function destroy(Article $article)
     {
-        //
+        foreach ($article->tags as $tag){
+            $article->tags()->detach();
+        }
+
+        $article->delete();
+
+        return redirect(route('writer.dashboard'))->with('message', 'Hai correttamente eliminato l\' articolo scelto');
     }
 
     public function byCategory(Category $category)

@@ -20,12 +20,12 @@
                     <div class="card-body">
                       <h5 class="card-title">{{$article->title}}</h5>
                       <p class="card-text">{{$article->subtitle}}</p>
-                      @if ($article->category->id == NULL)
-                            <!-- Non mostrare nulla -->
-                      @else
+                      @if ($article->category)
                             <a class="small text-muted fst-italic text-capitalize" href="{{route('article.byCategory', ['category' => $article->category->id])}}">{{$article->category->name}}</a>
+                      @else
+                            <p class="small text-muted fst-italic text-capitalize">Non categorizzato</p>
                       @endif
-
+                    <span class="text-muted small fst-italic"> tempo di lettura {{$article->readDuration()}} min</span>
 
                       
                       
